@@ -1,0 +1,59 @@
+
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+
+
+    upstream dstest.ecnu.edu.cn {
+	
+        	#host: /myapp/dstest.ecnu.edu.cn/agitated_einstein
+		
+        	server 202.120.80.128:32780;
+    	
+        	#host: /myapp/dstest.ecnu.edu.cn/berserk_heisenberg
+		
+        	server 202.120.80.128:32781;
+    	
+  }
+  server {
+      listen       80;
+      server_name  dstest.ecnu.edu.cn;
+      #charset koi8-r;
+      #access_log  logs/host.access.log  main;
+      location / {
+              proxy_pass      http://dstest.ecnu.edu.cn;
+              proxy_set_header  X-Real-IP  $remote_addr;
+      }
+}
+
+    upstream idptest2.ecnu.edu.cn {
+	
+        	#host: /myapp/idptest2.ecnu.edu.cn/clever_tesla
+		
