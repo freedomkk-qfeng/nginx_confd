@@ -6,7 +6,7 @@ RUN mv /tmp/confd /usr/bin && \
     chmod a+rx /usr/bin/confd && \
     chown root:root /usr/bin/confd
 
-WORKDIR /confd/
+COPY confd/ /confd/
 
-CMD ["run.sh"]
+CMD ["/confd/run.sh"]
 
